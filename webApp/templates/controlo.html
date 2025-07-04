@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SoundDashHosp - Acesso Técnico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
+  <style>
+    body {
+      background-color: #f5f8fa;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .page-title {
+      margin: 2rem 0 1rem;
+      color: #2c3e50;
+      text-align: center;
+    }
+    .form-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      padding: 3rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">SoundDashHosp</div>
+      <div class="tagline">Acesso Técnico - Configuração de Sensores</div>
+    </div>
+  </header>
+
+  <main class="container my-4">
+    <h2 class="page-title">Definir Parâmetros Técnicos</h2>
+    <div class="form-section">
+      <form id="configForm">
+        <!-- Seleção de Sensor -->
+        <div class="mb-4">
+          <label class="form-label">Selecionar Sensor</label>
+          <select class="form-control" name="sensor_name" required>
+            <option value="" disabled selected>-- Escolher sensor --</option>
+            <option value="sensor1" selected>Sensor 1</option>
+            <option value="sensor2">Sensor 2</option>
+            <option value="sensor3">Sensor 3</option>
+          </select>
+        </div>
+
+        <h5>Interface Audio Data</h5>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Sample Rate (Hz)</label>
+            <input type="number" class="form-control" name="sample_rate" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Block Size</label>
+            <input type="number" class="form-control" name="block_size" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Segment Duration (s)</label>
+            <input type="number" step="0.1" class="form-control" name="segment_duration" required>
+          </div>
+        </div>
+
+        <h5>Gravação de Áudio</h5>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Loop Recording</label>
+            <select class="form-control" name="audio_loop_recording">
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Duração do Ficheiro de Áudio (s)</label>
+            <input type="number" class="form-control" name="audio_file_duration" required>
+          </div>
+        </div>
+
+        <h5>Flags</h5>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Data Record</label>
+            <select class="form-control" name="data_record">
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Flag X</label>
+            <input type="text" class="form-control" name="flagx">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Flag Y</label>
+            <input type="text" class="form-control" name="flagy">
+          </div>
+        </div>
+
+        <h5>Deteção de Eventos</h5>
+        <div class="mb-4">
+          <label class="form-label">Event Threshold (limiar)</label>
+          <input type="number" step="0.1" class="form-control" name="event_threshold" required>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="button" class="btn btn-primary" onclick="guardarConfiguracoes()">Guardar Alterações</button>
+          <a href="/" class="btn btn-secondary">Voltar à Página Inicial</a>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <footer class="text-center">
+    <div class="container">
+      <div class="footer-logo mb-3" style="font-size: 1.5rem; font-weight: 700;">SoundDashHosp</div>
+      <p>&copy; 2025 SoundDashHosp. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    function guardarConfiguracoes() {
+      const form = document.getElementById("configForm");
+      const sensorName = form.sensor_name.value;
+
+      if (!sensorName) {
+        alert("Por favor seleciona um sensor.");
+        return;
+      }
+
+      const data = {
+        sensor: sensorName,
+        config: {
+          interface_audio_data: {
+            sample_rate: parseInt(form.sample_rate.value),
+            block_size: parseInt(form.block_size.value),
+            segment_duration: parseFloat(form.segment_duration.value)
+          },
+          audio_loop_recording: form.audio_loop_recording.value === "true",
+          audio_file_duration: parseInt(form.audio_file_duration.value),
+          flags: {
+            data_record: form.data_record.value === "true",
+            flagx: form.flagx.value,
+            flagy: form.flagy.value
+          },
+          event_threshold: parseFloat(form.event_threshold.value)
+        }
+      };
+
+      fetch("/api/parametros", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao enviar os dados.");
+        return res.json();
+      })
+      .then(response => {
+        alert("Parâmetros enviados com sucesso!");
+        console.log("Resposta do servidor:", response);
+      })
+      .catch(err => {
+        console.error("Erro:", err);
+        alert("Erro ao enviar os parâmetros.");
+      });
+    }
+  </script>
+</body>
+</html>
