@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, Response, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 from influxdb_client import InfluxDBClient
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 from io import StringIO
 import csv
@@ -79,6 +79,61 @@ def controlo():
     return render_template('controlo.html', username=current_user.id)
 
 # --- As tuas rotas originais ---
+@app.route("/api/eventos")
+def obter_dados_brutos():
+    sensor = request.args.get("sensor")
+    start_raw = request.args.get("start")
+    end_raw = request.args.get("end")
+    
+    if not sensor:
+        return jsonify({"erro": "Sensor não especificado"}), 400
+    
+    if not start_raw or not end_raw:
+        return jsonify({"erro": "Parâmetros 'start' e 'end' são obrigatórios"}), 400
+
+    # Converter para formato RFC3339 aceito pelo InfluxDB
+    try:
+        start_dt = datetime.strptime(start_raw, "%Y-%m-%dT%H:%M")
+        end_dt = datetime.strptime(end_raw, "%Y-%m-%dT%H:%M")
+        start = start_dt.isoformat() + "Z"
+        end = end_dt.isoformat() + "Z"
+    except ValueError as e:
+        return jsonify({"erro": f"Formato inválido de data. Use YYYY-MM-DDTHH:MM. Detalhes: {str(e)}"}), 400
+
+    # Campos a buscar
+    fields = ['EventDetect'] + [f'EventType{i}' for i in range(1, 11)]
+    field_filter = " or ".join([f'r["_field"] == "{f}"' for f in fields])
+
+    query = f'''
+    from(bucket: "{bucket}")
+      |> range(start: {start}, stop: {end})
+      |> filter(fn: (r) => r["_measurement"] == "{sensor}" and ({field_filter}))
+      |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+      |> filter(fn: (r) => r["EventDetect"] > 0)
+      |> sort(columns: ["_time"])
+    '''
+
+    try:
+        client = InfluxDBClient(url=url, token=token, org=org)
+        query_api = client.query_api()
+        tables = query_api.query(query)
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao consultar o InfluxDB: {str(e)}"}), 500
+
+    dados = []
+    for table in tables:
+        for row in table.records:
+            valores = row.values
+            registro = {
+                "time": row.get_time().isoformat(),
+                "sensor": valores.get("sensor_id"),
+                "EventDetect": valores.get("EventDetect"),
+            }
+            for i in range(1, 11):
+                registro[f"EventType{i}"] = valores.get(f"EventType{i}", 0)
+            dados.append(registro)
+    return jsonify(dados)
+
 
 @app.route("/api/stats")
 def get_raw_data():
@@ -114,7 +169,6 @@ def get_raw_data():
     tables_lcpeak = query_api.query(query_lcpeak, org=org)
     lcpeak = [{"time": record.get_time().isoformat(), "value": record.get_value()}
               for table in tables_lcpeak for record in table.records if record.get_value() is not None]
-
     return jsonify({
         "laea": laea,
         "lcpeak": lcpeak
@@ -220,13 +274,14 @@ def test():
 def display():
     return render_template('display.html')
 
-@app.route('/test3')
-def test3():
-    return render_template('test3.html')
+@app.route('/eventos')
+def eventos():
+    return render_template('eventos.html')
 
-@app.route('/kde')
-def kde_page():
-    return render_template('kde.html')
+@app.route('/guia')
+def guia():
+    return render_template('guia.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

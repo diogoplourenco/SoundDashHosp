@@ -11,6 +11,11 @@
       background-color: #f5f8fa;
       color: #333;
     }
+
+    html, body {
+      overflow-x: hidden;
+    
+    }
     header {
       background: linear-gradient(135deg, #2c3e50, #3498db);
       color: white;
@@ -80,8 +85,8 @@
           <li class="nav-item"><a class="nav-link" href="/">Início</a></li>
           <li class="nav-item"><a class="nav-link active" href="/atual">Monitorização Em Tempo Real</a></li>
           <li class="nav-item"><a class="nav-link" href="/tempo">Monitorização por Período</a></li>
-          <li class="nav-item"><a class="nav-link" href="/#sobre">Sobre</a></li>
-          <li class="nav-item"><a class="nav-link" href="/#contato">Contactos</a></li>
+          <li class="nav-item"><a class="nav-link" href="/eventos">Eventos Detetados</a></li>
+          <li class="nav-item"><a class="nav-link" href="/guia">Guia</a></li>
           <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-2" href="/login">Acesso Técnico</a></li>
         </ul>
       </div>
@@ -135,7 +140,7 @@
       <div class="col-md-9">
         <div id="graficoContainer">
           <div class="mb-4" id="graficoLAEA_box"><h5>Gráfico Crescimento LAEA</h5><iframe id="graficoLAEA" class="full-width-iframe"></iframe></div>
-          <div class="mb-4" id="NvlFreq_box"><h5>Nível Sonoro por Banda de Frequências</h5><iframe id="NvlFreq" class="full-width-iframe"></iframe></div>
+          <div class="mb-4" id="NvlFreq_box"><h5>Nível Sonoro por Banda de Frequências - Hz</h5><iframe id="NvlFreq" class="full-width-iframe"></iframe></div>
           <div class="mb-4" id="Eventos_box"><h5>Tipos de Eventos</h5><iframe id="Eventos" class="full-width-iframe"></iframe></div>
           <div class="mb-4" id="Spectogram_box"><h5>Espectograma</h5><iframe id="Spectogram" class="full-width-iframe"></iframe></div>
           <div class="mb-4 d-none" id="graficoMulti_box"><h5>Comparativo por Parâmetro</h5><iframe id="graficoMulti" class="full-width-iframe"></iframe></div>
@@ -151,8 +156,8 @@
         <a href="/">Início</a>
         <a href="/atual">Monitorização Em Tempo Real</a>
         <a href="/tempo">Monitorização por Período</a>
-        <a href="/#sobre">Sobre</a>
-        <a href="/#contato">Contactos</a>
+        <a href="/eventos">MEventos Detetados</a>
+        <a href="/guia">Guia</a>
       </div>
       <div>&copy; 2025 SoundDashHosp. Todos os direitos reservados.</div>
     </div>
