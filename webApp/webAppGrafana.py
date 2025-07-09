@@ -260,15 +260,15 @@ def home():
 
 @app.route('/atual')
 def atual():
-    return render_template('testAtual.html')
+    return render_template('atual.html')
 
 @app.route('/tempo')
 def tempo():
-    return render_template('testTempo.html')
+    return render_template('tempo.html')
 
-@app.route('/test')
-def test():
-    return render_template('test.html')
+@app.route('/mapa')
+def mapa():
+    return render_template('mapa.html')
 
 @app.route('/display')
 def display():

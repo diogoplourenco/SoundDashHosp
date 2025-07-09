@@ -38,6 +38,10 @@
       background-color: #3498db;
       color: white !important;
     }
+    .nav-link.active {
+      background-color: #3498db;
+      color: white !important;
+    }
     .btn-outline-primary {
       font-weight: 600;
     }
@@ -88,6 +92,7 @@
         <li class="nav-item"><a class="nav-link" href="/atual">Monitorização Em Tempo Real</a></li>
         <li class="nav-item"><a class="nav-link" href="/tempo">Monitorização por Período</a></li>
         <li class="nav-item"><a class="nav-link active" href="/eventos">Eventos Detetados</a></li>
+        <li class="nav-item"><a class="nav-link" href="/mapa">Mapa</a></li>
         <li class="nav-item"><a class="nav-link" href="/guia">Guia</a></li>
         <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-2" href="/login">Acesso Técnico</a></li>
       </ul>
@@ -110,7 +115,7 @@
     <div class="col-md-3">
       <label for="sensorSelect" class="form-label">Sensor</label>
       <select id="sensorSelect" class="form-select">
-        <option value="" disabled selected>Escolher...</option>
+        <option value="">Escolher...</option>
         <option value="sensor1" selected>Sensor 1</option>
         <option value="sensor2">Sensor 2</option>
         <option value="sensor3">Sensor 3</option>
@@ -132,6 +137,7 @@
       <a href="/atual">Monitorização Em Tempo Real</a>
       <a href="/tempo">Monitorização por Período</a>
       <a href="/eventos">Eventos Detetados</a>
+      <a href="/mapa">Mapa</a>
       <a href="/guia">Guia</a>
     </div>
     <div>&copy; 2025 SoundDashHosp. Todos os direitos reservados.</div>
