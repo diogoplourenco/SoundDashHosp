@@ -22,7 +22,7 @@ MQTT_BROKER = 'localhost'
 MQTT_PORT = 1881
 # Configurações do InfluxDB
 url = "http://localhost:8086"
-token = "-ChZKEWHWyIIRKU6SRU2SvuupVlJGp1MHQywC4OTnSRy7r09Z2JM5pGmBN_hzb4-UCQ9MrxLY-UXqEnSRemLCg=="
+token = "EtBIMfMguE5f0t4dgsmOZ9ysUF0UtaACxiFxa4bjAlJB07XskUMYe-sThuQwwLpcmcQ1FZxbQgOZ83WhnqZl3A=="
 org = "ISEL"
 bucket = "Sensor_Data"
 # --- Flask-Login setup ---
